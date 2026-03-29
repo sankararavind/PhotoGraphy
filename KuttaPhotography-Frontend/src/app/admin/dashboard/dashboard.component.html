@@ -1,0 +1,118 @@
+<div class="dashboard-wrap">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="brand">KUTTA<span>ADMIN</span></h2>
+    </div>
+    <nav class="nav">
+      <button [class.active]="activeTab === 'photos'" (click)="setTab('photos')">
+        <i class="icon-photo"></i> Photos
+      </button>
+      <button [class.active]="activeTab === 'videos'" (click)="setTab('videos')">
+        <i class="icon-video"></i> Videos
+      </button>
+      <button [class.active]="activeTab === 'contacts'" (click)="setTab('contacts')">
+        <i class="icon-mail"></i> Contacts 
+        <span class="badge" *ngIf="contacts.length > 0">{{ contacts.length }}</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="content-header">
+      <h1>{{ activeTab | titlecase }} Management</h1>
+    </header>
+
+    <section *ngIf="activeTab === 'photos'" class="tab-pane">
+      <div class="upload-section card">
+        <h3>Upload Photo</h3>
+        <form [formGroup]="photoForm" (ngSubmit)="uploadPhoto()" class="upload-form">
+          <input type="text" formControlName="title" placeholder="Title" class="form-control">
+          <textarea formControlName="description" placeholder="Description" class="form-control"></textarea>
+          <select formControlName="categoryId" class="form-control">
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+          <input type="file" (change)="onFileChange($event, 'photo')" accept="image/*" class="file-input">
+          <button type="submit" [disabled]="photoForm.invalid || uploading" class="btn-primary">
+            {{ uploading ? 'Uploading...' : 'Upload Photo' }}
+          </button>
+        </form>
+      </div>
+
+      <div class="grid">
+        <div *ngFor="let photo of photos" class="grid-item card">
+          <img [src]="baseUrl + photo.imageUrl" [alt]="photo.title">
+          <div class="item-info">
+            <h4>{{ photo.title }}</h4>
+            <p>{{ photo.category?.name }}</p>
+            <button class="btn-delete" (click)="deletePhoto(photo.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'videos'" class="tab-pane">
+      <div class="upload-section card">
+        <h3>Upload Video</h3>
+        <form [formGroup]="videoForm" (ngSubmit)="uploadVideo()" class="upload-form">
+          <input type="text" formControlName="title" placeholder="Title" class="form-control">
+          <textarea formControlName="description" placeholder="Description" class="form-control"></textarea>
+          <select formControlName="categoryId" class="form-control">
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+          <input type="file" (change)="onFileChange($event, 'video')" accept="video/*" class="file-input">
+          <button type="submit" [disabled]="videoForm.invalid || uploading" class="btn-primary">
+            {{ uploading ? 'Uploading...' : 'Upload Video' }}
+          </button>
+        </form>
+      </div>
+
+      <div class="grid">
+        <div *ngFor="let video of videos" class="grid-item card">
+          <video [src]="baseUrl + video.videoUrl" muted></video>
+          <div class="item-info">
+            <h4>{{ video.title }}</h4>
+            <p>{{ video.category?.name }}</p>
+            <button class="btn-delete" (click)="deleteVideo(video.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'contacts'" class="tab-pane">
+      <div class="card messages-list">
+        <h3>Contact Inquiries</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Inquiry Type</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Message</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let msg of contacts">
+              <td>{{ msg.submittedAt | date:'short' }}</td>
+              <td>{{ msg.name }}</td>
+              <td>{{ msg.eventType }}</td>
+              <td>{{ msg.email }}</td>
+              <td>{{ msg.phone }}</td>
+              <td class="msg-text">{{ msg.message }}</td>
+              <td>
+                <button class="btn-delete-sm" (click)="deleteContact(msg.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>

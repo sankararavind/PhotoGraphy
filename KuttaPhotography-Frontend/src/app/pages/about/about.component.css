@@ -1,0 +1,7 @@
+.pt-150 { padding-top: 150px; }
+.mb-50 { margin-bottom: 50px; }
+.page-title { font-size: 4rem; margin-bottom: 20px; }
+.subtitle { color: var(--text-gray); font-size: 1.2rem; max-width: 600px; }
+.about-content { padding: 50px; border-left: 4px solid var(--accent-orange); }
+.about-content h3 { font-size: 2rem; margin-bottom: 20px; color: var(--accent-orange); }
+.about-content p { margin-bottom: 20px; font-size: 1.1rem; color: var(--text-white); }

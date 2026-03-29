@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="KuttaPhotography.API/KuttaPhotography.API.csproj" />
+  <Project Path="KuttaPhotography.Core/KuttaPhotography.Core.csproj" />
+  <Project Path="KuttaPhotography.Infrastructure/KuttaPhotography.Infrastructure.csproj" />
+</Solution>

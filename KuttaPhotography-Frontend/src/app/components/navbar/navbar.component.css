@@ -1,0 +1,117 @@
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 25px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  transition: var(--transition-smooth);
+  background: transparent;
+}
+
+nav.scrolled {
+  background: rgba(11, 11, 11, 0.95);
+  padding: 15px 5%;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.logo a {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  color: var(--text-white);
+}
+
+.logo-highlight {
+  color: var(--accent-orange);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  position: relative;
+  padding: 5px 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-orange);
+  transition: var(--transition-smooth);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.btn-primary-outline {
+  border: 1px solid var(--accent-orange);
+  padding: 8px 20px !important;
+  color: var(--accent-orange) !important;
+}
+
+.btn-primary-outline:hover {
+  background: var(--accent-orange);
+  color: var(--primary-black) !important;
+}
+
+.btn-primary-outline::after {
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.menu-toggle span {
+  width: 30px;
+  height: 3px;
+  background: var(--text-white);
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle { display: flex; }
+  
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    right: -100%;
+    flex-direction: column;
+    background: rgba(11, 11, 11, 0.95);
+    width: 250px;
+    height: 100vh;
+    padding-top: 50px;
+    transition: 0.5s ease-in-out;
+  }
+  
+  .nav-links.open {
+    right: 0;
+  }
+}

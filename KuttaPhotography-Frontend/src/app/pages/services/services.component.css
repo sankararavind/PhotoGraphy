@@ -1,0 +1,11 @@
+.pt-150 { padding-top: 150px; }
+.mb-50 { margin-bottom: 50px; }
+.page-title { font-size: 4rem; margin-bottom: 20px; text-align: center; }
+.subtitle { color: var(--text-gray); font-size: 1.2rem; text-align: center; }
+.services-list { display: flex; flex-direction: column; gap: 30px; max-width: 1000px; margin: 0 auto; }
+.service-row { display: flex; justify-content: space-between; align-items: center; padding: 40px; border-left: 2px solid transparent; transition: var(--transition-smooth); }
+.service-row:hover { border-left-color: var(--accent-orange); transform: translateX(10px); }
+.row-content h2 { font-size: 2rem; margin-bottom: 15px; color: var(--accent-orange); }
+.row-content p { color: var(--text-gray); max-width: 600px; }
+.row-price { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-white); }
+@media(max-width:768px){ .service-row { flex-direction: column; align-items: flex-start; gap: 20px; } }

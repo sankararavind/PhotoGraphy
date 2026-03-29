@@ -1,0 +1,21 @@
+<nav [class.scrolled]="isScrolled">
+  <div class="logo">
+    <a routerLink="/">
+      <span class="logo-text">KUTTA</span> <span class="logo-highlight">PHOTOGRAPHY</span>
+    </a>
+  </div>
+
+  <div class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <ul class="nav-links" [class.open]="isMenuOpen">
+    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
+    <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About</a></li>
+    <li><a routerLink="/portfolio" routerLinkActive="active" (click)="toggleMenu()">Portfolio</a></li>
+    <li><a routerLink="/services" routerLinkActive="active" (click)="toggleMenu()">Services</a></li>
+    <li><a routerLink="/contact" routerLinkActive="active" class="btn-primary-outline" (click)="toggleMenu()">Contact</a></li>
+  </ul>
+</nav>

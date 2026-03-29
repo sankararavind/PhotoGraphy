@@ -1,0 +1,88 @@
+<section class="hero-section">
+  <div class="video-container" #parallaxBg>
+    <!-- Image Slider -->
+    <div class="slider-wrapper">
+      <div 
+        *ngFor="let slide of slides; let i = index" 
+        class="bg-image slide" 
+        [class.active]="i === currentSlide"
+        [style.background-image]="'url(' + slide.url + ')'">
+      </div>
+    </div>
+    <div class="overlay"></div>
+  </div>
+  
+  <div class="hero-content">
+    <div class="slide-content-wrapper">
+      <div 
+        *ngFor="let slide of slides; let i = index" 
+        class="slide-text" 
+        [class.active]="i === currentSlide">
+        <h1 class="hero-title">
+          {{ slide.title }}
+        </h1>
+        <p class="hero-subtitle">{{ slide.subtitle }}</p>
+      </div>
+    </div>
+    
+    <div class="hero-cta">
+      <a routerLink="/portfolio" class="btn-primary">View Portfolio</a>
+      <a routerLink="/services" class="btn-secondary">Our Services</a>
+    </div>
+  </div>
+
+  <div class="slider-controls">
+    <button class="control-btn prev" (click)="prevSlide()">&#10094;</button>
+    <div class="slider-dots">
+      <span 
+        *ngFor="let slide of slides; let i = index" 
+        class="dot" 
+        [class.active]="i === currentSlide"
+        (click)="setSlide(i)">
+      </span>
+    </div>
+    <button class="control-btn next" (click)="nextSlide()">&#10095;</button>
+  </div>
+  
+  <div class="scroll-indicator">
+    <span>Scroll Down</span>
+    <div class="mouse"></div>
+  </div>
+</section>
+
+<section class="about-preview section">
+  <div class="about-grid">
+    <div class="about-text animate-on-scroll">
+      <h2>Who We <span class="highlight">Are</span></h2>
+      <p>Kutta Photography is a premium studio specializing in high-end cinematic visuals. We don't just record events; we craft stories through light, composition, and emotion.</p>
+      <a routerLink="/about" class="read-more">Learn More &rarr;</a>
+    </div>
+    <div class="about-images animate-on-scroll">
+      <div class="image-stack">
+        <div class="img-box box-1 glass-panel"></div>
+        <div class="img-box box-2 glass-panel"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services-preview section">
+  <h2 class="section-title text-center animate-on-scroll">Our <span class="highlight">Expertise</span></h2>
+  <div class="services-grid">
+    <div class="service-card glass-panel animate-on-scroll" style="animation-delay: 0.1s;">
+      <div class="icon">📷</div>
+      <h3>Photography</h3>
+      <p>Portrait, Event, Commercial & Lifestyle</p>
+    </div>
+    <div class="service-card glass-panel animate-on-scroll" style="animation-delay: 0.2s;">
+      <div class="icon">🎥</div>
+      <h3>Videography</h3>
+      <p>Cinematic weddings, Music videos, Corporate films</p>
+    </div>
+    <div class="service-card glass-panel animate-on-scroll" style="animation-delay: 0.3s;">
+      <div class="icon">✂️</div>
+      <h3>Editing & VFX</h3>
+      <p>Color grading, Post-production, Motion graphics</p>
+    </div>
+  </div>
+</section>

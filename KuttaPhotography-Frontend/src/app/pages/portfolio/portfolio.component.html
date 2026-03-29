@@ -1,0 +1,26 @@
+<section class="section pt-150">
+  <div class="text-center mb-50">
+    <h1 class="page-title animate-on-scroll">Our <span class="highlight">Portfolio</span></h1>
+    <p class="subtitle animate-on-scroll" style="animation-delay: 0.2s;">Explore our latest work across all disciplines</p>
+  </div>
+
+  <div class="filter-controls animate-on-scroll" style="animation-delay: 0.3s;">
+    <button [class.active]="filter === 'all'" (click)="setFilter('all')">All Work</button>
+    <button [class.active]="filter === 'photo'" (click)="setFilter('photo')">Photography</button>
+    <button [class.active]="filter === 'video'" (click)="setFilter('video')">Videography</button>
+  </div>
+
+  <div class="gallery-grid">
+    <div *ngFor="let item of filteredItems" class="gallery-item glass-panel">
+      <div class="item-inner">
+        <img *ngIf="item.type === 'image'" [src]="item.displayUrl" [alt]="item.title" loading="lazy">
+        <video *ngIf="item.type === 'video'" [src]="item.displayUrl" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+        <div class="overlay">
+          <h3>{{item.title}}</h3>
+          <span class="category">{{item.category || item.type | uppercase}}</span>
+          <button *ngIf="item.type === 'video'" class="play-btn">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
