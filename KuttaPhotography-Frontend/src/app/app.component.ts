@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +13,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+  public auth = inject(AuthService);
+  private router = inject(Router);
   isAdminRoute = false;
-
-  constructor(private router: Router) {}
 
   ngOnInit() {
     // Observer for scroll animations
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
-          observer.unobserve(entry.target); // Stop observing once it's visible
+          observer.unobserve(entry.target); 
         }
       });
     }, { threshold: 0.1 });
@@ -30,9 +31,8 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.isAdminRoute = event.urlAfterRedirects.includes('/admin');
-        window.scrollTo(0, 0); // Reset scroll on route change
+        window.scrollTo(0, 0);
         
-        // Try finding elements slightly later to ensure DOM is ready
         setTimeout(() => {
           document.querySelectorAll('.animate-on-scroll').forEach((el) => {
             observer.observe(el);

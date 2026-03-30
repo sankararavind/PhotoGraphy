@@ -27,10 +27,14 @@ export class AuthService {
     );
   }
 
+  register(userData: any) {
+    return this.http.post<any>(`${this.apiUrl}/register`, userData);
+  }
+
   logout() {
     localStorage.removeItem('auth_token');
     this.isAuth.next(false);
-    this.router.navigate(['/admin/login']);
+    this.router.navigate(['/auth']);
   }
 
   private checkAuth(): boolean {

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BCrypt.Net;
 
 namespace KuttaPhotography.API.Controllers
 {
@@ -23,20 +24,46 @@ namespace KuttaPhotography.API.Controllers
             _config = config;
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            {
+                return BadRequest("User with this email already exists");
+            }
+
+            var user = new User
+            {
+                Name = request.Name,
+                Gender = request.Gender,
+                Email = request.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = "User"
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Registration successful" });
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            // In a real app, use BCrypt or Identity for proper hashing
-            // For now, we compare hashes (assuming manual seeding or direct update)
-            if (user == null || user.PasswordHash != request.Password) 
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Invalid email or password");
             }
 
             var token = GenerateJwtToken(user);
-            return Ok(new { token, user.Username, user.Role });
+            return Ok(new { 
+                token, 
+                user.Email, 
+                user.Name,
+                user.Role 
+            });
         }
 
         private string GenerateJwtToken(User user)
@@ -47,7 +74,8 @@ namespace KuttaPhotography.API.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -66,7 +94,15 @@ namespace KuttaPhotography.API.Controllers
 
     public class LoginRequest
     {
-        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public class RegisterRequest
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 }

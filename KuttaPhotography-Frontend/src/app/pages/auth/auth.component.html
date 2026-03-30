@@ -1,0 +1,100 @@
+<div class="auth-page">
+  <div class="auth-container" [class.right-panel-active]="isSignUp">
+    
+    <!-- Register Form (Sign Up) -->
+    <div class="form-container sign-up-container">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <h1>Create Account</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your email for registration</span>
+        
+        <div class="input-group">
+          <input type="text" formControlName="name" placeholder="Name" required />
+        </div>
+        
+        <div class="input-group">
+          <select formControlName="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <input type="email" formControlName="email" placeholder="Email" required />
+        </div>
+        
+        <div class="input-group">
+          <input type="password" formControlName="password" placeholder="Password" required />
+        </div>
+        
+        <div *ngIf="successMessage" class="success-msg">
+          {{ successMessage }}
+        </div>
+        
+        <div *ngIf="errorMessage" class="error-msg">
+          {{ errorMessage }}
+        </div>
+        
+        <button type="submit" [disabled]="registerForm.invalid || loading">
+          <span *ngIf="!loading">Sign Up</span>
+          <span *ngIf="loading">Creating...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Login Form (Sign In) -->
+    <div class="form-container sign-in-container">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <h1>Sign In</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your account</span>
+        
+        <div class="input-group">
+          <input type="email" formControlName="email" placeholder="Email" required />
+        </div>
+        
+        <div class="input-group">
+          <input type="password" formControlName="password" placeholder="Password" required />
+        </div>
+        
+        <a href="#" class="forgot-pwd">Forgot your password?</a>
+        
+        <div *ngIf="errorMessage" class="error-msg">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">Sign In</span>
+          <span *ngIf="loading">Logging In...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Overlay Panels -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Welcome Back!</h1>
+          <p>To keep connected with us please login with your personal info</p>
+          <button class="ghost" id="signIn" (click)="toggleAuth()">Sign In</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <button class="ghost" id="signUp" (click)="toggleAuth()">Sign Up</button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

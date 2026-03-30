@@ -116,12 +116,14 @@ using (var scope = app.Services.CreateScope())
     // Ensure DB is created and seed initial data
     context.Database.EnsureCreated();
 
-    if (!context.Users.Any())
+    if (!context.Users.Any(u => u.Email == "Admin@gmail.com"))
     {
         context.Users.Add(new User 
         { 
-            Username = "admin", 
-            PasswordHash = "admin123", // In production, use hashed passwords
+            Name = "System Admin",
+            Email = "Admin@gmail.com",
+            Gender = "Other",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"), 
             Role = "Admin" 
         });
     }

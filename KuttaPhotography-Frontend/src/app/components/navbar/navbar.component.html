@@ -1,21 +1,29 @@
-<nav [class.scrolled]="isScrolled">
+<nav [class.scrolled]="isScrolled" [class.guest-nav]="!auth.isLoggedIn">
   <div class="logo">
     <a routerLink="/">
       <span class="logo-text">KUTTA</span> <span class="logo-highlight">PHOTOGRAPHY</span>
     </a>
   </div>
 
-  <div class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+  <ng-container *ngIf="auth.isLoggedIn">
+    <div class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-  <ul class="nav-links" [class.open]="isMenuOpen">
-    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
-    <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About</a></li>
-    <li><a routerLink="/portfolio" routerLinkActive="active" (click)="toggleMenu()">Portfolio</a></li>
-    <li><a routerLink="/services" routerLinkActive="active" (click)="toggleMenu()">Services</a></li>
-    <li><a routerLink="/contact" routerLinkActive="active" class="btn-primary-outline" (click)="toggleMenu()">Contact</a></li>
-  </ul>
+    <ul class="nav-links" [class.open]="isMenuOpen">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
+      <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About</a></li>
+      <li><a routerLink="/portfolio" routerLinkActive="active" (click)="toggleMenu()">Portfolio</a></li>
+      <li><a routerLink="/services" routerLinkActive="active" (click)="toggleMenu()">Services</a></li>
+      <li><a routerLink="/admin" routerLinkActive="active" (click)="toggleMenu()">Dashboard</a></li>
+      <li><a href="javascript:void(0)" (click)="onLogout()">Logout</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active" class="btn-primary-outline" (click)="toggleMenu()">Contact</a></li>
+    </ul>
+  </ng-container>
+
+  <div *ngIf="!auth.isLoggedIn" class="guest-actions">
+    <a routerLink="/auth" class="sign-in-minimal">Sign In</a>
+  </div>
 </nav>
