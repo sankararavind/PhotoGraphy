@@ -34,7 +34,7 @@ yarn-error.log*
 
 # --- Local Secrets ---
 **/*appsettings.Development.json
-**/*appsettings.json
+# **/*appsettings.json (Removed so Vercel/Railway can see the base config)
 # Note: In production you might want to use Env variables instead of commiting appsettings.json.
 # But for a simple demo with the user, I'll keep the base appsettings.json so it works on Railway easily.
 # I'll only ignore Development specific.
