@@ -15,13 +15,17 @@ export class AuthService {
 
   private isAuth = new BehaviorSubject<boolean>(this.checkAuth());
   isAuth$ = this.isAuth.asObservable();
+  
+  private userRole = new BehaviorSubject<string | null>(localStorage.getItem('user_role'));
 
   login(credentials: any) {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
         if (res.token) {
           localStorage.setItem('auth_token', res.token);
+          localStorage.setItem('user_role', res.role);
           this.isAuth.next(true);
+          this.userRole.next(res.role);
         }
       })
     );
@@ -33,7 +37,9 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_role');
     this.isAuth.next(false);
+    this.userRole.next(null);
     this.router.navigate(['/auth']);
   }
 
@@ -43,5 +49,9 @@ export class AuthService {
 
   get isLoggedIn(): boolean {
     return this.isAuth.value;
+  }
+
+  get isAdmin(): boolean {
+    return this.userRole.value === 'Admin';
   }
 }
