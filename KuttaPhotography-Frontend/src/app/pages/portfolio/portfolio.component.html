@@ -13,13 +13,33 @@
   <div class="gallery-grid">
     <div *ngFor="let item of filteredItems" class="gallery-item glass-panel">
       <div class="item-inner">
-        <img *ngIf="item.type === 'image'" [src]="item.displayUrl" [alt]="item.title" loading="lazy">
-        <video *ngIf="item.type === 'video'" [src]="item.displayUrl" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
-        <div class="overlay">
-          <h3>{{item.title}}</h3>
-          <span class="category">{{item.category || item.type | uppercase}}</span>
-          <button *ngIf="item.type === 'video'" class="play-btn">▶</button>
-        </div>
+        <!-- Image Item -->
+        <ng-container *ngIf="item.type === 'image'">
+          <img [src]="item.displayUrl" [alt]="item.title" loading="lazy">
+          <div class="overlay">
+            <h3>{{item.title}}</h3>
+            <span class="category">{{item.category || item.type | uppercase}}</span>
+          </div>
+        </ng-container>
+
+        <!-- Video Item -->
+        <ng-container *ngIf="item.type === 'video'">
+          <video #v 
+                 [src]="item.displayUrl" 
+                 muted loop playsinline preload="metadata"
+                 (mouseenter)="v.play()"
+                 (mouseleave)="v.pause()"
+                 (click)="toggleVideo(v)">
+            Your browser does not support the video tag.
+          </video>
+          <div class="overlay" (click)="toggleVideo(v)">
+            <h3>{{item.title}}</h3>
+            <span class="category">{{item.category || item.type | uppercase}}</span>
+            <button class="play-btn">
+              {{ v.paused ? '▶' : '⏸' }}
+            </button>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

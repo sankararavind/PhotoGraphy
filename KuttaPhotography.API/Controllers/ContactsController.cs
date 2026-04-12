@@ -21,7 +21,7 @@ namespace KuttaPhotography.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ContactMessage>>> GetMessages()
         {
-            return await _context.ContactMessages.ToListAsync();
+            return await _context.ContactMessages.OrderByDescending(m => m.SubmittedAt).ToListAsync();
         }
 
         [HttpPost]

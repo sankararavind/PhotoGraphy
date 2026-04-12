@@ -14,6 +14,9 @@
         <i class="icon-mail"></i> Contacts 
         <span class="badge" *ngIf="contacts.length > 0">{{ contacts.length }}</span>
       </button>
+      <button [class.active]="activeTab === 'carousel'" (click)="setTab('carousel')">
+        <i class="icon-star"></i> Carousel
+      </button>
     </nav>
     <div class="sidebar-footer">
       <button class="logout-btn" (click)="logout()">Logout</button>
@@ -23,6 +26,7 @@
   <main class="content">
     <header class="content-header">
       <h1>{{ activeTab | titlecase }} Management</h1>
+      <button class="btn-refresh" (click)="loadData()">🔄 Refresh</button>
     </header>
 
     <section *ngIf="activeTab === 'photos'" class="tab-pane">
@@ -78,6 +82,33 @@
             <h4>{{ video.title }}</h4>
             <p>{{ video.category?.name }}</p>
             <button class="btn-delete" (click)="deleteVideo(video.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'carousel'" class="tab-pane">
+      <div class="upload-section card">
+        <h3>Add Carousel Slide</h3>
+        <p class="hint">Recommended: 1200x800px or larger</p>
+        <form [formGroup]="carouselForm" (ngSubmit)="uploadCarousel()" class="upload-form">
+          <input type="text" formControlName="title" placeholder="Main Title (e.g. Bike Shoot)" class="form-control">
+          <input type="text" formControlName="subtitle" placeholder="Subtitle" class="form-control">
+          <input type="number" formControlName="order" placeholder="Display Order (optional)" class="form-control">
+          <input type="file" (change)="onFileChange($event, 'carousel')" accept="image/*" class="file-input">
+          <button type="submit" [disabled]="carouselForm.invalid || uploading" class="btn-primary">
+            {{ uploading ? 'Uploading...' : 'Add Slide' }}
+          </button>
+        </form>
+      </div>
+
+      <div class="grid">
+        <div *ngFor="let slide of carouselSlides" class="grid-item card">
+          <img [src]="baseUrl + slide.imageUrl" [alt]="slide.title">
+          <div class="item-info">
+            <h4>{{ slide.title }}</h4>
+            <p>{{ slide.subtitle }}</p>
+            <button class="btn-delete" (click)="deleteCarousel(slide.id)">Delete</button>
           </div>
         </div>
       </div>

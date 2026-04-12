@@ -3,38 +3,35 @@ using KuttaPhotography.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
-using Microsoft.AspNetCore.Http;
 
 namespace KuttaPhotography.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VideosController : ControllerBase
+    public class CarouselController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
 
-        public VideosController(AppDbContext context, IWebHostEnvironment env)
+        public CarouselController(AppDbContext context, IWebHostEnvironment env)
         {
             _context = context;
             _env = env;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Video>>> GetVideos()
+        public async Task<ActionResult<IEnumerable<CarouselSlide>>> GetSlides()
         {
-            return await _context.Videos.Include(v => v.Category).ToListAsync();
+            return await _context.CarouselSlides.OrderBy(s => s.Order).ToListAsync();
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [RequestSizeLimit(524288000)] // 500MB
-        public async Task<ActionResult<Video>> PostVideo([FromForm] string title, [FromForm] string description, [FromForm] int categoryId, IFormFile file)
+        public async Task<ActionResult<CarouselSlide>> PostSlide([FromForm] string title, [FromForm] string subtitle, [FromForm] int order, IFormFile file)
         {
             if (file == null || file.Length == 0) return BadRequest("No file uploaded");
 
-            var uploadsFolder = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", "videos");
+            var uploadsFolder = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", "carousel");
             if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
@@ -45,31 +42,31 @@ namespace KuttaPhotography.API.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var video = new Video
+            var slide = new CarouselSlide
             {
                 Title = title,
-                Description = description,
-                CategoryId = categoryId,
-                VideoUrl = $"/uploads/videos/{fileName}"
+                Subtitle = subtitle,
+                Order = order,
+                ImageUrl = $"/uploads/carousel/{fileName}"
             };
 
-            _context.Videos.Add(video);
+            _context.CarouselSlides.Add(slide);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVideos", new { id = video.Id }, video);
+            return CreatedAtAction("GetSlides", new { id = slide.Id }, slide);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteVideo(int id)
+        public async Task<IActionResult> DeleteSlide(int id)
         {
-            var video = await _context.Videos.FindAsync(id);
-            if (video == null) return NotFound();
+            var slide = await _context.CarouselSlides.FindAsync(id);
+            if (slide == null) return NotFound();
 
-            var filePath = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), video.VideoUrl.TrimStart('/'));
+            var filePath = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), slide.ImageUrl.TrimStart('/'));
             if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
 
-            _context.Videos.Remove(video);
+            _context.CarouselSlides.Remove(slide);
             await _context.SaveChangesAsync();
             return NoContent();
         }

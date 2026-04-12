@@ -16,13 +16,14 @@ export class DashboardComponent implements OnInit {
   private auth = inject(AuthService);
   private fb = inject(FormBuilder);
 
-  activeTab: 'photos' | 'videos' | 'contacts' = 'photos';
+  activeTab: 'photos' | 'videos' | 'contacts' | 'carousel' = 'photos';
   baseUrl = window.location.origin.includes('localhost:4200') ? 'http://localhost:5274' : '';
   
   photos: any[] = [];
   videos: any[] = [];
   contacts: any[] = [];
   categories: any[] = [];
+  carouselSlides: any[] = [];
 
   photoForm = this.fb.group({
     title: ['', Validators.required],
@@ -38,6 +39,13 @@ export class DashboardComponent implements OnInit {
     file: [null as File | null, Validators.required]
   });
 
+  carouselForm = this.fb.group({
+    title: ['', Validators.required],
+    subtitle: [''],
+    order: [0],
+    file: [null as File | null, Validators.required]
+  });
+
   uploading = false;
 
   ngOnInit() {
@@ -49,19 +57,23 @@ export class DashboardComponent implements OnInit {
     this.api.get<any[]>('videos').subscribe(data => this.videos = data);
     this.api.get<any[]>('contacts').subscribe(data => this.contacts = data);
     this.api.get<any[]>('categories').subscribe(data => this.categories = data);
+    this.api.get<any[]>('carousel').subscribe(data => this.carouselSlides = data);
   }
 
-  setTab(tab: 'photos' | 'videos' | 'contacts') {
+  setTab(tab: 'photos' | 'videos' | 'contacts' | 'carousel') {
     this.activeTab = tab;
+    this.loadData();
   }
 
-  onFileChange(event: any, type: 'photo' | 'video') {
+  onFileChange(event: any, type: 'photo' | 'video' | 'carousel') {
     const file = event.target.files[0];
     if (file) {
       if (type === 'photo') {
         this.photoForm.patchValue({ file: file });
-      } else {
+      } else if (type === 'video') {
         this.videoForm.patchValue({ file: file });
+      } else {
+        this.carouselForm.patchValue({ file: file });
       }
     }
   }
@@ -106,6 +118,26 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  uploadCarousel() {
+    if (this.carouselForm.valid) {
+      this.uploading = true;
+      const formData = new FormData();
+      formData.append('title', this.carouselForm.value.title!);
+      formData.append('subtitle', this.carouselForm.value.subtitle || '');
+      formData.append('order', (this.carouselForm.value.order || 0).toString());
+      formData.append('file', this.carouselForm.value.file!);
+
+      this.api.post('carousel', formData).subscribe({
+        next: () => {
+          this.uploading = false;
+          this.carouselForm.reset();
+          this.loadData();
+        },
+        error: () => this.uploading = false
+      });
+    }
+  }
+
   deletePhoto(id: number) {
     if (confirm('Delete this photo?')) {
       this.api.delete(`photos/${id}`).subscribe(() => this.loadData());
@@ -115,6 +147,12 @@ export class DashboardComponent implements OnInit {
   deleteVideo(id: number) {
     if (confirm('Delete this video?')) {
       this.api.delete(`videos/${id}`).subscribe(() => this.loadData());
+    }
+  }
+
+  deleteCarousel(id: number) {
+    if (confirm('Delete this carousel slide?')) {
+      this.api.delete(`carousel/${id}`).subscribe(() => this.loadData());
     }
   }
 

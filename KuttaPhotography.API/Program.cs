@@ -11,11 +11,26 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var dataDir = Path.Combine(builder.Environment.ContentRootPath, "data");
+if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
+
+// Configure Kestrel for large uploads (500MB)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 524288000; // 500MB
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
+
+// Configure FormOptions for large uploads (500MB)
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 524288000; // 500MB
+});
 
 // Configure DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -99,7 +114,16 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseDefaultFiles();
-app.UseStaticFiles();
+
+// Configure MIME types for videos
+var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+provider.Mappings[".mov"] = "video/quicktime";
+provider.Mappings[".mp4"] = "video/mp4";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
 
 app.UseCors("AllowAll");
 

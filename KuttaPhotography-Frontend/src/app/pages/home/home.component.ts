@@ -20,8 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   slideInterval: any;
 
   defaultSlides = [
-    { url: 'https://images.unsplash.com/photo-1542051812871-7575058aa0eb?q=80&w=1200&auto=format&fit=crop', title: 'Capturing Moments', subtitle: 'Cinematic Photography & Videography' },
-    { url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop', title: 'Eternal Romance', subtitle: 'Award-winning Wedding Narratives' }
+    { url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1200&auto=format&fit=crop', title: 'Bike Photo Shooting', subtitle: 'Experience the thrill through our lens' },
+    { url: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1200&auto=format&fit=crop', title: 'Luxury Automotives', subtitle: 'Capturing automotive perfection' }
   ];
 
   ngOnInit() {
@@ -29,13 +29,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadSlides() {
-    this.api.get<any[]>('photos').subscribe({
-      next: (photos) => {
-        if (photos && photos.length > 0) {
-          this.slides = photos.slice(0, 3).map(p => ({
-            url: this.baseUrl + p.imageUrl,
-            title: p.title,
-            subtitle: p.description
+    this.api.get<any[]>('carousel').subscribe({
+      next: (slides) => {
+        if (slides && slides.length > 0) {
+          this.slides = slides.map(s => ({
+            url: this.baseUrl + s.imageUrl,
+            title: s.title,
+            subtitle: s.subtitle
           }));
         } else {
           this.slides = this.defaultSlides;

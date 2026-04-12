@@ -67,4 +67,13 @@ export class PortfolioComponent implements OnInit {
       document.querySelectorAll('.gallery-item').forEach(el => el.classList.add('visible'));
     }, 50);
   }
+
+  toggleVideo(video: HTMLVideoElement) {
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch(err => console.error('Error playing video:', err));
+    } else {
+      video.pause();
+    }
+  }
 }
